@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "./lib",
+    "strict": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["src", "Tests"],
+  "exclude": ["node_modules", "**/__tests__/*"],
+  "paths": {
+    "@/*": ["src/*"]
+  }
+}
