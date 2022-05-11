@@ -3,6 +3,7 @@ import { getClassMethods } from '../Helpers/getClassMethods';
 import { logInfo, logError, logSuccess, logWarn } from '../Helpers/Log';
 import { GetFiles } from './GetFiles';
 import * as emoji from 'node-emoji';
+import { log } from 'console';
 
 class TestRunner {
   private fileGetter: GetFiles;

@@ -22,7 +22,7 @@ class GetFiles {
           return;
         }
 
-        if (file.name.includes('.d.ts')) {
+        if (file.name.includes('.d.ts') || !file.name.includes('Test')) {
           return;
         }
         this.foundFiles.push(`${dir}/${file.name}`);
