@@ -43,14 +43,13 @@ class TestRunner {
 
       await testingClass.setUp();
       try {
+        logInfo(`Test: ${key}`);
         await testingClass[key]();
 
-        logInfo(`Test: ${key}`);
         this.successOrNoAssertions(testingClass);
       } catch (error) {
         this.failedTests += 1;
         if (error instanceof AssertionError) {
-          logInfo(`Test: ${key}`);
           logError('Test failed');
           logError(error.message);
           logInfo(error.errorDetails);
