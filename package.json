@@ -13,12 +13,14 @@
     },
     "author": "Dan Chadwick",
     "license": "MIT",
+    "dependencies": {
+        "node-emoji": "^1.11.0"
+    },
     "devDependencies": {
         "@types/filesystem": "^0.0.32",
         "@types/node": "^17.0.31",
         "@types/node-emoji": "^1.8.1",
         "fs": "^0.0.1-security",
-        "node-emoji": "^1.11.0",
         "path": "^0.12.7",
         "prettier": "^2.6.2",
         "tslint": "^6.1.3",
