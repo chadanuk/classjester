@@ -1,102 +1,148 @@
-import { AssertionError } from '../Errors/AssertionError';
-import { getClassMethods } from '../Helpers/getClassMethods';
-import { logInfo, logError, logSuccess, logWarn } from '../Helpers/Log';
-import { GetFiles } from './GetFiles';
+import { AssertionError } from "../Errors/AssertionError";
+import { getClassMethods } from "../Helpers/getClassMethods";
+import { logInfo, logError, logSuccess, logWarn } from "../Helpers/Log";
+import { GetFiles } from "./GetFiles";
+import * as emoji from "node-emoji";
 
 class TestRunner {
   private fileGetter: GetFiles;
+  private testFilesCount = 0;
   private tests = 0;
+
+  private testsRun = 0;
   private failedTests = 0;
 
   constructor() {
     this.fileGetter = new GetFiles();
   }
 
-  private checkforNoAssertions(testingClass: any) {
+  private checkForNoAssertions(testingClass: any) {
     if (testingClass.testAssertionCount === 0) {
-      logWarn('No assertions made in this test.');
+      logWarn("No assertions made in this test.");
     }
 
     return testingClass.testAssertionCount > 0;
   }
 
-  private async callTestMethod(testingClass: any, key: string) {
-    if (!key.includes('test')) {
-      return;
+  private shouldCallMethod(testingClass: any, methodName: string) {
+    return (
+      testingClass[methodName] instanceof Function &&
+      methodName.includes("test")
+    );
+  }
+
+  private successOrNoAssertions(testingClass: any) {
+    if (this.checkForNoAssertions(testingClass)) {
+      logSuccess(
+        `${emoji.get(":white_check_mark:")} Hooray, test passed ${
+          testingClass.testAssertionCount
+        } assertions`
+      );
     }
+  }
 
-    logInfo(`Class: ${testingClass.constructor.name}`);
-    if (testingClass[key] instanceof Function) {
+  private async callTestMethod(testingClass: any, key: string) {
+    return new Promise(async (resolve, reject) => {
+      this.tests += 1;
+
       await testingClass.setUp();
-
       try {
-        logInfo(`Method: ${key}`);
-        this.tests += 1;
         await testingClass[key]();
 
-        if (this.checkforNoAssertions(testingClass)) {
-          logSuccess(`Hooray test passed ${testingClass.testAssertionCount} assertions`);
-        }
+        logInfo(`Test: ${key}`);
+        this.successOrNoAssertions(testingClass);
       } catch (error) {
         this.failedTests += 1;
         if (error instanceof AssertionError) {
-          logInfo(`Method: ${key}`);
-          logError('Test failed');
+          logInfo(`Test: ${key}`);
+          logError("Test failed");
           logError(error.message);
           logInfo(error.errorDetails);
+        } else {
+          throw error;
         }
       } finally {
+        this.testsRun += 1;
+        await testingClass.tearDown();
         testingClass.resetTestAssertionCount();
+        resolve(true);
+      }
+    });
+  }
+
+  private async importTestClass(file: string) {
+    let filePath: string = "";
+    if (process.env.IS_SELF) {
+      filePath = `${process.cwd()}/${file.replace(
+        "./lib/Tests/",
+        "lib/Tests/"
+      )}`.replace(/\/\//g, "/");
+    } else {
+      filePath = `${process.cwd()}/${file}`
+        .replace("./", "")
+        .replace(/\/\//g, "/");
+    }
+    return new (await import(filePath)).default();
+  }
+
+  private async workThroughTestFiles(files: string[]) {
+    for (const file of files) {
+      const fileArray: string[] = file.split("/");
+
+      if (!fileArray[fileArray.length - 1].includes("Test")) {
+        return;
       }
 
-      await testingClass.tearDown();
-      testingClass = null;
+      const testingClass: any = await this.importTestClass(file);
+      logInfo(`\nClass: ${testingClass.constructor.name}`);
+      try {
+        const classMethods: string[] = getClassMethods(testingClass).filter(
+          (key: string) => {
+            return this.shouldCallMethod(testingClass, key);
+          }
+        );
+
+        const testMethodsAsObject: { [key: string]: string } = {};
+        classMethods.forEach((key: string) => {
+          testMethodsAsObject[key] = key;
+        });
+
+        for (const key of classMethods) {
+          await this.callTestMethod(testingClass, key);
+        }
+      } catch (error: any) {
+        logError("Error occurred");
+        logError(error.message);
+        throw error;
+      } finally {
+      }
+    }
+
+    if (files.length && this.testsRun == this.tests) {
+      this.finish();
     }
   }
 
   public async run(folder: string) {
-    logInfo('Starting tests...');
-
     let files: Array<string>;
     try {
       files = await this.fileGetter.setPath(folder).files();
+
+      this.testFilesCount = files.length;
     } catch (error) {
       throw error;
     }
 
-    files.forEach(async (file: string) => {
-      const fileArray: string[] = file.split('/');
+    logInfo(`Starting tests in ${this.testFilesCount} file(s)...`);
 
-      if (!fileArray[fileArray.length - 1].includes('Test')) {
-        return;
-      }
-      try {
-        let testingClass: any;
+    return await this.workThroughTestFiles(files);
+  }
 
-        let filePath = `${process.cwd()}/${file.replace('./lib/Tests/', 'lib/Tests/')}`.replace(/\/\//g, '/');
-        if (process.env.IS_SELF) {
-          testingClass = new (await import(filePath)).default();
-        } else {
-          filePath = `${process.cwd()}/${file}`.replace('./', '').replace(/\/\//g, '/');
-
-          testingClass = new (await import(filePath)).default();
-        }
-
-        getClassMethods(testingClass).forEach(async (key: string) => {
-          setTimeout(async () => {
-            await this.callTestMethod(testingClass, key);
-          });
-        });
-      } catch (error: any) {
-        logError('Error occurred');
-        logError(error.message);
-        throw error;
-      }
-    });
+  finish() {
+    logInfo(`${this.tests} tests`);
     if (this.failedTests) {
       logError(`${this.failedTests} failed`);
     }
-    logInfo(`${this.tests} Tests`);
   }
 }
 export { TestRunner };
