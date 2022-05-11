@@ -16,7 +16,7 @@ class Assertions {
       return true;
     }
 
-    throw new AssertionError(`${value.toString()} is not equal to true`);
+    throw new AssertionError(`${value.toString()} is not equal to expected value: true`);
   }
 
   assertEquals(expected: any, value: any) {
@@ -25,7 +25,7 @@ class Assertions {
       return true;
     }
 
-    this.throwError(`${JSON.stringify(value)} is not equal to ${JSON.stringify(expected)}`);
+    this.throwError(`${JSON.stringify(value)} is not equal to expected value: ${JSON.stringify(expected)}`);
   }
 
   assertType(expected: any, value: any) {
@@ -46,7 +46,7 @@ class Assertions {
       return true;
     }
 
-    this.throwError(`${value.toString()} is not equal to ${expected.toString()}`);
+    this.throwError(`${value.toString()} is not equal to expected value: ${expected.toString()}`);
   }
 
   assertNotUndefined(value: any) {
@@ -67,7 +67,9 @@ class Assertions {
     }
 
     this.throwError(
-      `Count of ${JSON.stringify({ value })} (${countableValue.length}) is not equal to ${expected.toString()}`,
+      `Count of ${JSON.stringify({ value })} (${
+        countableValue.length
+      }) is not equal to expected value: ${expected.toString()}`,
     );
   }
 
