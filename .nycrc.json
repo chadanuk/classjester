@@ -4,6 +4,7 @@
     "exclude": [
         "coverage/**",
         "src/**",
+        "lib/Core/TestRunner.js",
         "**/Tests/**"
     ]
 }
