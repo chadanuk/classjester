@@ -8,7 +8,7 @@ class AssertionError extends Error {
   constructor(message: string) {
     super(message);
 
-    this.errorDetails = this.stack === undefined ? '' : this.stack?.split('\n')[2];
+    this.errorDetails = this.stack === undefined ? '' : this.stack?.split('\n').splice(1, 3).join('\n');
   }
 }
 
