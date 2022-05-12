@@ -14,6 +14,15 @@ class AssertionsTest extends TestCase {
       this.assertEquals('false is not equal to expected value: true', error.message);
     }
   }
+
+  async testAssertionErrorThrownIfExpectedValueIsNotEqual(): Promise<void> {
+    try {
+      this.assertEquals(true, false);
+    } catch (error: any) {
+      this.assertTrue(error instanceof AssertionError);
+      this.assertEquals('false is not equal to expected value: true', error.message);
+    }
+  }
 }
 
 export default AssertionsTest;
