@@ -51,10 +51,10 @@ class TestRunner {
         this.failedTests += 1;
 
         if (error.constructor.name === AssertionError.name) {
-          logError('Test failed');
-          logError(error.message);
+          logError(' Test failed');
+          logError(` ${error.message}`);
           error.outputDiff();
-          logInfo(error.errorDetails);
+          logInfo(`${error.errorDetails}\n`);
         } else {
           throw error;
         }
