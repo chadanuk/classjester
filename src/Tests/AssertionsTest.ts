@@ -12,6 +12,13 @@ class AssertionsTest extends TestCase {
     } catch (error: any) {
       this.assertTrue(error instanceof AssertionError);
       this.assertEquals('false is not equal to expected value: true', error.message);
+      this.assertEquals(
+        `\u001b[32m-Expected\u001b[39m\u001b[31m+Received\u001b[39m\u001b[32m-true\u001b[39m\u001b[31m+false\u001b[39m`.replace(
+          /\s/g,
+          '',
+        ),
+        error.diff.replace(/\s/g, ''),
+      );
     }
   }
 

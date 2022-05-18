@@ -29,6 +29,7 @@ class GetFiles {
       });
     } catch (error: any) {
       logError(error.message);
+      throw error;
     }
   }
 

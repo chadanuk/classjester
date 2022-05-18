@@ -17,12 +17,6 @@ class TestCaseTest extends TestCase {
 
     this.assertType('function', testCase['tearDown']);
   }
-
-  public testHasFileGetter() {
-    const testCase = new TestCase();
-
-    this.assertType(GetFiles, testCase['fileGetter']);
-  }
 }
 
 export default TestCaseTest;

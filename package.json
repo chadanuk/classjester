@@ -9,7 +9,7 @@
         "prepare": "npm run build",
         "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
         "lint": "tslint -p tsconfig.json",
-        "test": "tsc --outDir test-lib/ && IS_SELF=true node test-lib/index.js lib/Tests",
+        "test": "npx tsc && npx tsc --outDir test-lib/ && IS_SELF=true node test-lib/index.js lib/Tests",
         "coverage": "nyc npm run test",
         "coverage-report": "nyc --reporter=html npm run test"
     },

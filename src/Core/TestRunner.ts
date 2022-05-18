@@ -53,7 +53,7 @@ class TestRunner {
         if (error.constructor.name === AssertionError.name) {
           logError(' Test failed');
           logError(` ${error.message}`);
-          error.outputDiff();
+          console.log(error.diff);
           logInfo(`${error.errorDetails}\n`);
         } else {
           throw error;
