@@ -1,3 +1,4 @@
+import { GetFiles } from '../Core/GetFiles';
 import { TestCase } from '../Core/TestCase';
 
 class TestCaseTest extends TestCase {
@@ -15,6 +16,12 @@ class TestCaseTest extends TestCase {
     const testCase = new TestCase();
 
     this.assertType('function', testCase['tearDown']);
+  }
+
+  public testHasFileGetter() {
+    const testCase = new TestCase();
+
+    this.assertType(GetFiles, testCase['fileGetter']);
   }
 }
 

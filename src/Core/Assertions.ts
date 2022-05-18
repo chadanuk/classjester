@@ -4,11 +4,15 @@ import { logSuccess } from '../Helpers/Log';
 class Assertions {
   public testAssertionCount = 0;
 
-  throwError(message: string, value: any = null, expected: any = null) {
+  throwError(message: string, expected: any, value: any) {
     let messageValue = value === undefined ? '[[value]]' : JSON.stringify(value);
     let messageExpected = expected === undefined ? '[[expected]]' : JSON.stringify(expected);
 
-    throw new AssertionError(message.replace(/{{value}}/g, messageValue).replace(/{{expected}}/, messageExpected));
+    throw new AssertionError(
+      message.replace(/{{value}}/g, messageValue).replace(/{{expected}}/, messageExpected),
+      expected,
+      value,
+    );
   }
 
   assertTrue(value: any, errorMessage: string | null = null) {
@@ -16,7 +20,7 @@ class Assertions {
       return true;
     }
 
-    throw new AssertionError(`${value.toString()} is not equal to expected value: true`);
+    this.throwError(`${value.toString()} is not equal to expected value: true`, true, value);
   }
 
   assertEquals(expected: any, value: any) {
@@ -25,7 +29,11 @@ class Assertions {
       return true;
     }
 
-    this.throwError(`${JSON.stringify(value)} is not equal to expected value: ${JSON.stringify(expected)}`);
+    this.throwError(
+      `${JSON.stringify(value)} is not equal to expected value: ${JSON.stringify(expected)}`,
+      expected,
+      value,
+    );
   }
 
   assertType(expected: any, value: any) {
@@ -38,7 +46,7 @@ class Assertions {
       return true;
     }
 
-    this.throwError(`${value} is not of type ${expected}`);
+    this.throwError(`${value} is not of type ${expected}`, expected, value);
   }
 
   assertNotEquals(expected: any, value: any, message: any = null) {
@@ -46,14 +54,14 @@ class Assertions {
       return true;
     }
 
-    this.throwError(`${value.toString()} is not equal to expected value: ${expected.toString()}`);
+    this.throwError(`${value.toString()} is not equal to expected value: ${expected.toString()}`, expected, value);
   }
 
   assertNotUndefined(value: any) {
     try {
       return this.assertNotEquals(undefined, value);
     } catch (error) {
-      this.throwError('Value is undefined');
+      this.throwError('Value is undefined', undefined, value);
     }
   }
 
@@ -70,6 +78,8 @@ class Assertions {
       `Count of ${JSON.stringify({ value })} (${
         countableValue.length
       }) is not equal to expected value: ${expected.toString()}`,
+      expected,
+      value,
     );
   }
 

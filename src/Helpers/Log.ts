@@ -1,15 +1,21 @@
+import * as chalk from 'chalk';
+
 const logInfo = (message: string) => {
-  console.log(`\x1b[47m${message}\x1b[0m`);
+  console.log(chalk.reset(message));
 };
 const logSuccess = (message: string) => {
-  console.log(`\x1b[32m${message}\x1b[0m`);
+  console.log(chalk.green(message));
 };
 const logWarn = (message: string) => {
-  console.log(`\x1b[34m${message}\x1b[0m`);
+  console.log(chalk.yellow(message));
 };
 
 const logError = (message: string) => {
-  console.log(`\x1b[31m${message}\x1b[0m`);
+  console.log(chalk.red(message));
 };
 
-export { logInfo, logSuccess, logError, logWarn };
+const logTitle = (message: string) => {
+  console.log(chalk.white.bgBlack(message));
+};
+
+export { logInfo, logSuccess, logError, logWarn, logTitle };

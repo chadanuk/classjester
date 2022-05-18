@@ -1,6 +1,6 @@
 import { AssertionError } from '../Errors/AssertionError';
 import { getClassMethods } from '../Helpers/getClassMethods';
-import { logInfo, logError, logSuccess, logWarn } from '../Helpers/Log';
+import { logTitle, logInfo, logError, logSuccess, logWarn } from '../Helpers/Log';
 import { GetFiles } from './GetFiles';
 import * as emoji from 'node-emoji';
 import { log } from 'console';
@@ -47,11 +47,13 @@ class TestRunner {
         await testingClass[key]();
 
         this.successOrNoAssertions(testingClass);
-      } catch (error) {
+      } catch (error: any) {
         this.failedTests += 1;
-        if (error instanceof AssertionError) {
+
+        if (error.constructor.name === AssertionError.name) {
           logError('Test failed');
           logError(error.message);
+          error.outputDiff();
           logInfo(error.errorDetails);
         } else {
           throw error;
@@ -84,7 +86,7 @@ class TestRunner {
       }
 
       const testingClass: any = await this.importTestClass(file);
-      logInfo(`\nClass: ${testingClass.constructor.name}`);
+      logTitle(`\nClass: ${testingClass.constructor.name}`);
       try {
         const classMethods: string[] = getClassMethods(testingClass).filter((key: string) => {
           return this.shouldCallMethod(testingClass, key);
@@ -127,7 +129,10 @@ class TestRunner {
   }
 
   finish() {
-    logInfo(`${this.tests} tests`);
+    const logFn = this.failedTests ? logError : logSuccess;
+    const testReport = `${this.tests - this.failedTests}/${this.tests} passed`;
+
+    logFn(`\n${this.tests} tests: ${testReport}`);
     if (this.failedTests) {
       logError(`${this.failedTests} failed`);
     }
