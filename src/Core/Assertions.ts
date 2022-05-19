@@ -71,7 +71,6 @@ class Assertions {
   }
 
   assertNotUndefined(value: any) {
-    this.testAssertionCount += 1;
     try {
       return this.assertNotEquals(undefined, value);
     } catch (error) {

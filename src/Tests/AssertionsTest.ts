@@ -124,6 +124,35 @@ class AssertionsTest extends TestCase {
       this.assertEquals('Count of {"value":["a","b"]} (2) is not equal to expected value: 3', error.message);
     }
   }
+
+  testCanAssertNotUndefined() {
+    try {
+      this.assertNotUndefined('something');
+      this.assertEquals(1, this.testAssertionCount);
+    } catch (error) {
+      this.failTest('Undefined assertion fails');
+    }
+  }
+
+  testCanAssertNotUndefinedAndThrowError() {
+    try {
+      this.assertNotUndefined(undefined);
+    } catch (error: any) {
+      this.assertEquals(1, this.testAssertionCount);
+      this.assertTrue(error instanceof AssertionError);
+      this.assertEquals('Value is undefined', error.message);
+    }
+  }
+
+  testCanFailTestManually() {
+    try {
+      this.failTest('Failed this one');
+    } catch (error: any) {
+      this.assertEquals(1, this.testAssertionCount);
+      this.assertTrue(error instanceof AssertionError);
+      this.assertEquals('Failed this one', error.message);
+    }
+  }
 }
 
 export default AssertionsTest;
