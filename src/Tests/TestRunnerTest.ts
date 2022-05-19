@@ -58,11 +58,13 @@ class TestCaseTest extends TestCase {
     });
 
     try {
-      const results = await this.testRunner.run('mockedTests');
+      await this.testRunner.run('mockedTests');
       this.assertEquals(2, this.testRunner.testsRun);
     } catch (error: any) {
       this.failTest("TestRunner doesn't run tests correctly");
     } finally {
+      // after a test runs
+      mock.restore();
       rewiremock.disable();
     }
   }

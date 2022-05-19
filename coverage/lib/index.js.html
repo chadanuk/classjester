@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.35% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>14/17</span>
+                <span class='fraction'>0/17</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.66% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/3</span>
+                <span class='fraction'>0/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.35% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>14/17</span>
+                <span class='fraction'>0/17</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -88,23 +88,23 @@
 <a name='L23'></a><a href='#L23'>23</a>
 <a name='L24'></a><a href='#L24'>24</a>
 <a name='L25'></a><a href='#L25'>25</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -112,23 +112,23 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const process_1 = require("process");
-const TestRunner_1 = require("./Core/TestRunner");
-const args = [];
-const startTime = new Date().getTime();
-process.argv.forEach(function (val) {
-    args.push(val.replace('tests', 'Tests'));
+<span class="cstat-no" title="statement not covered" >Object.defineProperty(exports, "__esModule", { value: true });</span>
+const process_1 = <span class="cstat-no" title="statement not covered" >require("process");</span>
+const TestRunner_1 = <span class="cstat-no" title="statement not covered" >require("./Core/TestRunner");</span>
+const args = <span class="cstat-no" title="statement not covered" >[];</span>
+const startTime = <span class="cstat-no" title="statement not covered" >new Date().getTime();</span>
+<span class="cstat-no" title="statement not covered" >process.argv.forEach(<span class="fstat-no" title="function not covered" >fu</span>nction (val) {</span>
+<span class="cstat-no" title="statement not covered" >    args.push(val.replace('tests', 'Tests'));</span>
 });
-global.onerror = <span class="fstat-no" title="function not covered" >(e</span>rror) =&gt; {
+<span class="cstat-no" title="statement not covered" >global.onerror = <span class="fstat-no" title="function not covered" >(e</span>rror) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    console.warn(error);</span>
 };
-try {
-    const classJester = new TestRunner_1.TestRunner();
-    classJester.run(`./${args[2]}`).then(() =&gt; {
-        const endTime = new Date().getTime();
-        console.log(`Duration elapsed: ${(endTime - startTime) / 1000}s`);
-        (0, process_1.exit)(0);
+<span class="cstat-no" title="statement not covered" >try {</span>
+    const classJester = <span class="cstat-no" title="statement not covered" >new TestRunner_1.TestRunner();</span>
+<span class="cstat-no" title="statement not covered" >    classJester.run(`./${args[2]}`).then(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
+        const endTime = <span class="cstat-no" title="statement not covered" >new Date().getTime();</span>
+<span class="cstat-no" title="statement not covered" >        console.log(`Duration elapsed: ${(endTime - startTime) / 1000}s`);</span>
+<span class="cstat-no" title="statement not covered" >        (0, process_1.exit)(0);</span>
     });
 }
 catch (error) {
@@ -142,7 +142,7 @@ catch (error) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Fri May 13 2022 11:24:59 GMT+0100 (British Summer Time)
+                at Thu May 19 2022 13:30:20 GMT+0100 (British Summer Time)
             </div>
         <script src="../prettify.js"></script>
         <script>

@@ -42,6 +42,15 @@ class AssertionsTest extends TestCase {
       this.failTest('String check fails');
     }
   }
+
+  testCanAssertCount() {
+    try {
+      this.assertCount(2, ['a', 'b']);
+      this.assertCount(2, { id: 'a', value: 'b' });
+    } catch (error) {
+      this.failTest('Count assertion fails');
+    }
+  }
 }
 
 export default AssertionsTest;
