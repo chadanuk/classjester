@@ -1,10 +1,16 @@
 import { exit } from 'process';
 import { TestCase } from './Core/TestCase';
 import { TestRunner } from './Core/TestRunner';
-const args: string[] = [];
+const args: { [key: string | number]: string } = {};
 const startTime = new Date().getTime();
-process.argv.forEach(function (val: string) {
-  args.push(val.replace('tests', 'Tests'));
+process.argv.forEach(function (val: string, index: number) {
+  let key = 'folder';
+  let value = val.replace(/"/g, '');
+  if (value.includes('=')) {
+    [key, value] = value.split('=');
+  }
+
+  args[key.replace('--', '')] = value;
 });
 
 global.onerror = (error) => {
@@ -12,8 +18,9 @@ global.onerror = (error) => {
 };
 try {
   const classJester = new TestRunner();
+  const folder: string = `./${args.folder}`;
 
-  classJester.run(`./${args[2]}`).then(() => {
+  classJester.run(folder, args.file, args.test).then(() => {
     const endTime = new Date().getTime();
     console.log(`Duration elapsed: ${(endTime - startTime) / 1000}s`);
     exit(0);

@@ -2,6 +2,7 @@
     "extends": "@istanbuljs/nyc-config-typescript",
     "all": true,
     "exclude": [
+        "test-lib/**",
         "coverage/**",
         "src/**",
         "**/Tests/**"

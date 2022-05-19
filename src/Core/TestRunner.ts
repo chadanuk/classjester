@@ -6,10 +6,13 @@ import * as emoji from 'node-emoji';
 import { log } from 'console';
 
 class TestRunner {
+  private limitToFile: string | null = null;
+  private limitToTest: string | null = null;
   private fileGetter: GetFiles;
   private testFilesCount = 0;
   private tests = 0;
   private failedTests = 0;
+  private totalAssertions = 0;
 
   public testsRun = 0;
 
@@ -26,6 +29,9 @@ class TestRunner {
   }
 
   private shouldCallMethod(testingClass: any, methodName: string) {
+    if (this.limitToTest && this.limitToTest !== methodName) {
+      return;
+    }
     return testingClass[methodName] instanceof Function && methodName.includes('test');
   }
 
@@ -61,6 +67,7 @@ class TestRunner {
       } finally {
         this.testsRun += 1;
         await testingClass.tearDown();
+        this.totalAssertions += testingClass.testAssertionCount;
         testingClass.resetTestAssertionCount();
         resolve(true);
       }
@@ -80,8 +87,12 @@ class TestRunner {
   private async workThroughTestFiles(files: string[]) {
     for (const file of files) {
       const fileArray: string[] = file.split('/');
+      const fileName: string = fileArray[fileArray.length - 1];
+      if (!fileName.includes('Test')) {
+        return;
+      }
 
-      if (!fileArray[fileArray.length - 1].includes('Test')) {
+      if (this.limitToFile && fileName !== this.limitToFile) {
         return;
       }
 
@@ -113,12 +124,14 @@ class TestRunner {
     }
   }
 
-  public async run(folder: string) {
+  public async run(folder: string, file: string | null = null, test: string | null = null) {
+    this.limitToFile = file ? `${file}.js`.replace('.js.js', '.js') : null;
+    this.limitToTest = test;
     let files: Array<string>;
     try {
       files = await this.fileGetter.setPath(folder).files();
 
-      this.testFilesCount = files.length;
+      this.testFilesCount = this.limitToFile ? 1 : files.length;
     } catch (error) {
       throw error;
     }
@@ -132,7 +145,7 @@ class TestRunner {
     const logFn = this.failedTests ? logError : logSuccess;
     const testReport = `${this.tests - this.failedTests}/${this.tests} passed`;
 
-    logFn(`\n${this.tests} tests: ${testReport}`);
+    logFn(`\n${this.tests} tests: ${testReport}, assertions: ${this.totalAssertions}`);
     if (this.failedTests) {
       logError(`${this.failedTests} failed`);
       return false;

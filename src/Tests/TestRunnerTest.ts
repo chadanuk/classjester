@@ -53,6 +53,7 @@ class TestCaseTest extends TestCase {
         'SomeFileTest.js': 'export new Class {}',
         'sub-dir': {
           'SomeOtherFileTest.js': 'export new Class {}',
+          'SomeOtherFileNotToCall.js': 'export new Class {}',
         },
       },
     });

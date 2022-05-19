@@ -16,19 +16,25 @@ class Assertions {
   }
 
   assertTrue(value: any, errorMessage: string | null = null) {
-    if (this.assertEquals(true, value)) {
-      return true;
-    }
+    try {
+      if (this.assertEquals(true, value)) {
+        return true;
+      }
+    } catch (error: any) {
+      let message = errorMessage ? errorMessage : `${value.toString()} is not equal to expected value: true`;
 
-    this.throwError(`${value.toString()} is not equal to expected value: true`, true, value);
+      this.throwError(message, true, value);
+    }
   }
 
   assertFalse(value: any, errorMessage: string | null = null) {
-    if (this.assertEquals(false, value)) {
-      return true;
+    try {
+      return this.assertEquals(false, value);
+    } catch (error: any) {
+      let message = errorMessage ? errorMessage : `${value.toString()} is not equal to expected value: false`;
+
+      this.throwError(message, true, value);
     }
-    let message = errorMessage || `${value.toString()} is not equal to expected value: false`;
-    this.throwError(message, true, value);
   }
 
   assertEquals(expected: any, value: any) {
@@ -50,7 +56,7 @@ class Assertions {
       return true;
     }
 
-    if (value instanceof expected) {
+    if (typeof expected !== 'string' && value instanceof expected) {
       return true;
     }
 
@@ -58,14 +64,16 @@ class Assertions {
   }
 
   assertNotEquals(expected: any, value: any, message: any = null) {
-    if (!this.assertEquals(expected, value)) {
+    this.testAssertionCount += 1;
+    if (JSON.stringify(value) !== JSON.stringify(expected)) {
       return true;
     }
 
-    this.throwError(`${value.toString()} is not equal to expected value: ${expected.toString()}`, expected, value);
+    this.throwError(`${value.toString()} is equal to: ${expected.toString()} and it should not be`, expected, value);
   }
 
   assertNotUndefined(value: any) {
+    this.testAssertionCount += 1;
     try {
       return this.assertNotEquals(undefined, value);
     } catch (error) {
@@ -74,6 +82,7 @@ class Assertions {
   }
 
   assertCount(expected: Number, value: any) {
+    this.testAssertionCount += 1;
     let countableValue = value;
     if (typeof value === 'object') {
       countableValue = Object.keys(value);
@@ -92,6 +101,7 @@ class Assertions {
   }
 
   failTest(message: string = 'Test marked as failed.') {
+    this.testAssertionCount += 1;
     this.throwError(message, null, null);
   }
 

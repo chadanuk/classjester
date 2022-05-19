@@ -10,7 +10,6 @@
         "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
         "lint": "tslint -p tsconfig.json",
         "test": "npx tsc && npx tsc --outDir test-lib/ && IS_SELF=true node test-lib/index.js lib/Tests",
-        "coverage": "IS_SELF=true nyc node test-lib/index.js lib/Tests",
         "coverage-report": "nyc --reporter=html npm run test"
     },
     "author": "Dan Chadwick",
