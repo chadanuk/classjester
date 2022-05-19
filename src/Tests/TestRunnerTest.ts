@@ -25,11 +25,13 @@ class TestCaseTest extends TestCase {
   }
 
   public async testRunFunction() {
+    const thisTestCase = this;
     rewiremock(`${process.cwd()}/mockedTests/SomeFileTest.js`).with(
       (module.exports = {
         default: class SomeFileTest extends TestCase {
           testFakeTest() {
             this.assertTrue(true);
+            thisTestCase.assertTrue(true);
           }
         },
       }),
@@ -38,7 +40,8 @@ class TestCaseTest extends TestCase {
       (module.exports = {
         default: class SomeFileTest extends TestCase {
           testOtherFakeTest() {
-            this.assertTrue(true);
+            this.assertTrue(false);
+            thisTestCase.assertTrue(true);
           }
         },
       }),
@@ -55,10 +58,9 @@ class TestCaseTest extends TestCase {
     });
 
     try {
-      await this.testRunner.run('mockedTests');
+      const results = await this.testRunner.run('mockedTests');
       this.assertEquals(2, this.testRunner.testsRun);
     } catch (error: any) {
-      console.log(error);
       this.failTest("TestRunner doesn't run tests correctly");
     } finally {
       rewiremock.disable();

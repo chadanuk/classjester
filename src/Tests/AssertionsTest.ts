@@ -6,6 +6,10 @@ class AssertionsTest extends TestCase {
     this.assertTrue(true);
   }
 
+  async testCanCheckIfFalseEqualsFalse(): Promise<void> {
+    this.assertFalse(false);
+  }
+
   async testAssertionErrorThrownIfExpectedValueIsNotTrue(): Promise<void> {
     try {
       this.assertTrue(false);
@@ -28,6 +32,14 @@ class AssertionsTest extends TestCase {
     } catch (error: any) {
       this.assertTrue(error instanceof AssertionError);
       this.assertEquals('false is not equal to expected value: true', error.message);
+    }
+  }
+
+  testTypeOfChecksTypeCorrectly() {
+    try {
+      this.assertType('string', 'some string');
+    } catch (error) {
+      this.failTest('String check fails');
     }
   }
 }

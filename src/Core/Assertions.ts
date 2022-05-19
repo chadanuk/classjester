@@ -23,6 +23,14 @@ class Assertions {
     this.throwError(`${value.toString()} is not equal to expected value: true`, true, value);
   }
 
+  assertFalse(value: any, errorMessage: string | null = null) {
+    if (this.assertEquals(false, value)) {
+      return true;
+    }
+    let message = errorMessage || `${value.toString()} is not equal to expected value: false`;
+    this.throwError(message, true, value);
+  }
+
   assertEquals(expected: any, value: any) {
     this.testAssertionCount += 1;
     if (JSON.stringify(value) === JSON.stringify(expected)) {

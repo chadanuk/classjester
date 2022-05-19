@@ -109,7 +109,7 @@ class TestRunner {
     }
 
     if (files.length && this.testsRun == this.tests) {
-      this.finish();
+      return this.finish();
     }
   }
 
@@ -128,14 +128,17 @@ class TestRunner {
     return await this.workThroughTestFiles(files);
   }
 
-  finish() {
+  finish(): boolean {
     const logFn = this.failedTests ? logError : logSuccess;
     const testReport = `${this.tests - this.failedTests}/${this.tests} passed`;
 
     logFn(`\n${this.tests} tests: ${testReport}`);
     if (this.failedTests) {
       logError(`${this.failedTests} failed`);
+      return false;
     }
+
+    return true;
   }
 }
 export { TestRunner };
