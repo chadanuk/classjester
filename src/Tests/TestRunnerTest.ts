@@ -4,7 +4,7 @@ import { TestRunner } from '../Core/TestRunner';
 import * as mock from 'mock-fs';
 import rewiremock from 'rewiremock';
 
-class TestCaseTest extends TestCase {
+class TestRunnerTest extends TestCase {
   private testRunner: TestRunner;
 
   constructor() {
@@ -71,4 +71,4 @@ class TestCaseTest extends TestCase {
   }
 }
 
-export default TestCaseTest;
+export default TestRunnerTest;
