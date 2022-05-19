@@ -1,8 +1,9 @@
 import { GetFiles } from '../Core/GetFiles';
 import { TestCase } from '../Core/TestCase';
+import rewiremock from 'rewiremock';
+
 import { TestRunner } from '../Core/TestRunner';
 import * as mock from 'mock-fs';
-import rewiremock from 'rewiremock';
 
 class TestRunnerTest extends TestCase {
   private testRunner: TestRunner;
@@ -26,6 +27,7 @@ class TestRunnerTest extends TestCase {
 
   public async testRunFunction() {
     const thisTestCase = this;
+
     rewiremock(`${process.cwd()}/mockedTests/SomeFileTest.js`).with(
       (module.exports = {
         default: class SomeFileTest extends TestCase {
