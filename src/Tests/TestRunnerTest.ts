@@ -69,6 +69,38 @@ class TestRunnerTest extends TestCase {
       rewiremock.disable();
     }
   }
+
+  public async testNoAssertionsFunction() {
+    const thisTestCase = this;
+    rewiremock(`${process.cwd()}/mockedTests/NoAssertionsTest.js`).with(
+      (module.exports = {
+        default: class NoAssertionsTest extends TestCase {
+          noAssertionsTest() {
+            thisTestCase.assertTrue(true);
+          }
+        },
+      }),
+    );
+
+    rewiremock.enable();
+
+    mock({
+      mockedTests: {
+        'NoAssertionsTest.js': 'export new Class {}',
+      },
+    });
+
+    try {
+      await this.testRunner.run('mockedTests');
+    } catch (error: any) {
+      this.assertEquals(1, this.testRunner.testsRun);
+      this.assertEquals(0, this.testRunner.totalAssertions);
+    } finally {
+      // after a test runs
+      mock.restore();
+      rewiremock.disable();
+    }
+  }
 }
 
 export default TestRunnerTest;

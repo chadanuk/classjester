@@ -12,8 +12,8 @@ class TestRunner {
   private testFilesCount = 0;
   private tests = 0;
   private failedTests = 0;
-  private totalAssertions = 0;
 
+  public totalAssertions = 0;
   public testsRun = 0;
 
   constructor() {
