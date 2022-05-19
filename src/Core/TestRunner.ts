@@ -9,9 +9,9 @@ class TestRunner {
   private fileGetter: GetFiles;
   private testFilesCount = 0;
   private tests = 0;
-
-  private testsRun = 0;
   private failedTests = 0;
+
+  public testsRun = 0;
 
   constructor() {
     this.fileGetter = new GetFiles();

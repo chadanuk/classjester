@@ -1,25 +1,67 @@
 import { GetFiles } from '../Core/GetFiles';
 import { TestCase } from '../Core/TestCase';
 import { TestRunner } from '../Core/TestRunner';
+import * as mock from 'mock-fs';
+import rewiremock from 'rewiremock';
 
 class TestCaseTest extends TestCase {
+  private testRunner: TestRunner;
+
   constructor() {
     super();
+    this.testRunner = new TestRunner();
   }
 
   public testHasRunFunction() {
-    const testRunner = new TestRunner();
-
-    this.assertType('function', testRunner['run']);
+    this.assertType('function', this.testRunner['run']);
   }
 
   public async testErrorsWithNonValidFolder() {
-    const testRunner = new TestRunner();
-
     try {
-      await testRunner.run('some-folder');
+      await this.testRunner.run('some-folder');
     } catch (error: any) {
       this.assertEquals(`ENOENT: no such file or directory, scandir 'some-folder'`, error.message);
+    }
+  }
+
+  public async testRunFunction() {
+    rewiremock(`${process.cwd()}/mockedTests/SomeFileTest.js`).with(
+      (module.exports = {
+        default: class SomeFileTest extends TestCase {
+          testFakeTest() {
+            this.assertTrue(true);
+          }
+        },
+      }),
+    );
+    rewiremock(`${process.cwd()}/mockedTests/sub-dir/SomeOtherFileTest.js`).with(
+      (module.exports = {
+        default: class SomeFileTest extends TestCase {
+          testOtherFakeTest() {
+            this.assertTrue(true);
+          }
+        },
+      }),
+    );
+    rewiremock.enable();
+
+    mock({
+      mockedTests: {
+        'SomeFileTest.js': 'export new Class {}',
+        'sub-dir': {
+          'SomeOtherFileTest.js': 'export new Class {}',
+        },
+      },
+    });
+
+    try {
+      await this.testRunner.run('mockedTests');
+      this.assertEquals(2, this.testRunner.testsRun);
+    } catch (error: any) {
+      console.log(error);
+      this.failTest("TestRunner doesn't run tests correctly");
+    } finally {
+      rewiremock.disable();
     }
   }
 }

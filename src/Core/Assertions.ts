@@ -83,6 +83,10 @@ class Assertions {
     );
   }
 
+  failTest(message: string = 'Test marked as failed.') {
+    this.throwError(message, null, null);
+  }
+
   resetTestAssertionCount() {
     this.testAssertionCount = 0;
   }
