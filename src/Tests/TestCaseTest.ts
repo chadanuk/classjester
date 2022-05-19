@@ -1,4 +1,3 @@
-import { GetFiles } from '../Core/GetFiles';
 import { TestCase } from '../Core/TestCase';
 
 class TestCaseTest extends TestCase {
