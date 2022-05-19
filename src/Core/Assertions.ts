@@ -17,9 +17,7 @@ class Assertions {
 
   assertTrue(value: any, errorMessage: string | null = null) {
     try {
-      if (this.assertEquals(true, value)) {
-        return true;
-      }
+      return this.assertEquals(true, value);
     } catch (error: any) {
       let message = errorMessage ? errorMessage : `${value.toString()} is not equal to expected value: true`;
 
