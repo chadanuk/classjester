@@ -5,6 +5,7 @@ import * as emoji from 'node-emoji';
 import { LoggerInterface } from './Logging/LoggerInterface';
 import { Logger } from './Logging/Logger';
 import { SilentLogger } from './Logging/SilentLogger';
+import { TestCase } from './TestCase';
 
 class TestRunner {
   private limitToFile: string | null = null;
@@ -31,6 +32,7 @@ class TestRunner {
   private checkForNoAssertions(testingClass: any) {
     if (testingClass.testAssertionCount === 0) {
       this.logger.logWarn('No assertions made in this test.');
+      return;
     }
 
     return testingClass.testAssertionCount > 0;
@@ -57,8 +59,6 @@ class TestRunner {
       try {
         this.logger.logInfo(`Test: ${key}`);
         await testingClass[key]();
-
-        this.successOrNoAssertions(testingClass);
       } catch (error: any) {
         this.failedTests += 1;
 
@@ -71,8 +71,11 @@ class TestRunner {
           throw error;
         }
       } finally {
+        console.log('TEST RAN');
         this.testsRun += 1;
+        this.successOrNoAssertions(testingClass);
         await testingClass.tearDown();
+
         this.totalAssertions += testingClass.testAssertionCount;
         testingClass.resetTestAssertionCount();
         resolve(true);
@@ -90,38 +93,51 @@ class TestRunner {
     return new (await import(filePath)).default();
   }
 
-  private async workThroughTestFiles(files: string[]) {
-    for (const file of files) {
-      const fileArray: string[] = file.split('/');
-      const fileName: string = fileArray[fileArray.length - 1];
-      if (!fileName.includes('Test')) {
-        return;
-      }
-
-      if (this.limitToFile && fileName !== this.limitToFile) {
-        return;
-      }
-
-      const testingClass: any = await this.importTestClass(file);
-      this.logger.logTitle(`\nClass: ${testingClass.constructor.name}`);
-      try {
-        const classMethods: string[] = getClassMethods(testingClass).filter((key: string) => {
-          return this.shouldCallMethod(testingClass, key);
-        });
-        this.tests += classMethods.length;
-        for (const key of classMethods) {
+  private async callMethods(testingClass: TestCase) {
+    const classMethods: string[] = getClassMethods(testingClass).filter((key: string) => {
+      return this.shouldCallMethod(testingClass, key);
+    });
+    this.tests += classMethods.length;
+    return new Promise(async (resolve, reject) => {
+      for (const key of classMethods) {
+        try {
+          console.log('RUN TEST');
           await this.callTestMethod(testingClass, key);
+        } catch (error: any) {
+          this.logger.logError('Error occurred');
+          this.logger.logError(error.message);
+          throw error;
         }
-      } catch (error: any) {
-        this.logger.logError('Error occurred');
-        this.logger.logError(error.message);
-        throw error;
-      } finally {
       }
-    }
-    if (this.testFilesCount && this.testsRun === this.tests) {
-      return this.finish();
-    }
+
+      resolve(true);
+    });
+  }
+
+  private async workThroughTestFiles(files: string[]) {
+    return new Promise(async (resolve, reject) => {
+      for (const file of files) {
+        const fileArray: string[] = file.split('/');
+        const fileName: string = fileArray[fileArray.length - 1];
+        if (!fileName.includes('Test')) {
+          return;
+        }
+
+        if (this.limitToFile && fileName !== this.limitToFile) {
+          return;
+        }
+
+        const testingClass: TestCase = await this.importTestClass(file);
+        this.logger.logTitle(`\nClass: ${testingClass.constructor.name}`);
+        await this.callMethods(testingClass);
+        console.log('END OF TEST CASE');
+      }
+
+      if (this.testFilesCount && this.testsRun === this.tests) {
+        this.finish();
+        resolve(true);
+      }
+    });
   }
 
   public async run(folder: string, file: string | null = null, test: string | null = null) {

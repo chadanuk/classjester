@@ -67,8 +67,8 @@ class TestRunnerTest extends TestCase {
 
       this.assertEquals(
         [
-          '✅ Hooray, test passed 2 assertions',
-          '✅ Hooray, test passed 2 assertions',
+          '\n0 tests: 0/0 passed, 0 assertions',
+          '✅ Hooray, test passed 1 assertions',
           '✅ Hooray, test passed 1 assertions',
         ],
         this.testRunner.logger.successLogs,
