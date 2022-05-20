@@ -32,7 +32,7 @@ class TestRunnerTest extends TestCase {
     rewiremock(`${process.cwd()}/mockedTests/SomeFileTest.js`).with(
       (module.exports = {
         default: class SomeFileTest extends TestCase {
-          testFakeTest() {
+          async testFakeTest() {
             this.assertTrue(true);
             thisTestCase.assertTrue(true);
           }
@@ -42,7 +42,7 @@ class TestRunnerTest extends TestCase {
     rewiremock(`${process.cwd()}/mockedTests/sub-dir/SomeOtherFileTest.js`).with(
       (module.exports = {
         default: class SomeOtherFileTest extends TestCase {
-          testOtherFakeTest() {
+          async testOtherFakeTest() {
             this.assertTrue(false);
             thisTestCase.assertTrue(true);
           }
@@ -63,9 +63,23 @@ class TestRunnerTest extends TestCase {
 
     try {
       await this.testRunner.run('mockedTests');
+      console.log(this.testRunner.logger.successLogs);
+
+      this.assertEquals(
+        [
+          '✅ Hooray, test passed 2 assertions',
+          '✅ Hooray, test passed 2 assertions',
+          '✅ Hooray, test passed 1 assertions',
+        ],
+        this.testRunner.logger.successLogs,
+      );
       this.assertEquals(2, this.testRunner.testsRun);
     } catch (error: any) {
-      this.failTest("TestRunner doesn't run tests correctly");
+      if (error.constructor.name === 'AssertionError') {
+        throw error;
+      } else {
+        this.failTest("TestRunner doesn't run tests correctly");
+      }
     } finally {
       // after a test runs
       mock.restore();

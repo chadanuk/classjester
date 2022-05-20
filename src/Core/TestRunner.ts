@@ -13,8 +13,8 @@ class TestRunner {
   private testFilesCount = 0;
   private tests = 0;
   private failedTests = 0;
-  private logger: LoggerInterface;
 
+  public logger: LoggerInterface;
   public totalAssertions = 0;
   public testsRun = 0;
 
@@ -53,8 +53,6 @@ class TestRunner {
 
   private async callTestMethod(testingClass: any, key: string) {
     return new Promise(async (resolve, reject) => {
-      this.tests += 1;
-
       await testingClass.setUp();
       try {
         this.logger.logInfo(`Test: ${key}`);
@@ -110,12 +108,7 @@ class TestRunner {
         const classMethods: string[] = getClassMethods(testingClass).filter((key: string) => {
           return this.shouldCallMethod(testingClass, key);
         });
-
-        const testMethodsAsObject: { [key: string]: string } = {};
-        classMethods.forEach((key: string) => {
-          testMethodsAsObject[key] = key;
-        });
-
+        this.tests += classMethods.length;
         for (const key of classMethods) {
           await this.callTestMethod(testingClass, key);
         }
@@ -126,8 +119,7 @@ class TestRunner {
       } finally {
       }
     }
-
-    if (files.length && this.testsRun == this.tests) {
+    if (this.testFilesCount && this.testsRun === this.tests) {
       return this.finish();
     }
   }
@@ -156,7 +148,7 @@ class TestRunner {
     const logFn = this.failedTests ? 'logError' : 'logSuccess';
     const testReport = `${this.tests - this.failedTests}/${this.tests} passed`;
 
-    this.logger[logFn](`\n${this.tests} tests: ${testReport}, assertions: ${this.totalAssertions}`);
+    this.logger[logFn](`\n${this.tests} tests: ${testReport}, ${this.totalAssertions} assertions`);
     if (this.failedTests) {
       this.logger.logError(`${this.failedTests} failed`);
       return false;
