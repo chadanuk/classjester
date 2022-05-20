@@ -1,9 +1,11 @@
 import { Dirent, readdirSync } from 'fs';
-import { logError } from '../Helpers/Log';
+import { LoggerInterface } from './Logging/LoggerInterface';
 
 class GetFiles {
   private foundFiles: string[] = [];
   private path: string = './';
+
+  constructor(private logger: LoggerInterface) {}
 
   setPath(path: string): GetFiles {
     this.path = path;
@@ -28,7 +30,7 @@ class GetFiles {
         this.foundFiles.push(`${dir}/${file.name}`);
       });
     } catch (error: any) {
-      logError(error.message);
+      this.logger.logError(error.message);
       throw error;
     }
   }

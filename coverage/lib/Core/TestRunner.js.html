@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.29% </span>
+                <span class="strong">89.81% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>93/103</span>
+                <span class='fraction'>97/108</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.33% </span>
+                <span class="strong">71.42% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>33/45</span>
+                <span class='fraction'>35/49</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>25/25</span>
+                <span class='fraction'>26/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.62% </span>
+                <span class="strong">90.09% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>87/96</span>
+                <span class='fraction'>91/101</span>
             </div>
         
             
@@ -218,7 +218,15 @@
 <a name='L153'></a><a href='#L153'>153</a>
 <a name='L154'></a><a href='#L154'>154</a>
 <a name='L155'></a><a href='#L155'>155</a>
-<a name='L156'></a><a href='#L156'>156</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">13x</span>
@@ -235,6 +243,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -243,6 +252,11 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -348,6 +362,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
@@ -387,9 +403,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestRunner = void 0;
 const AssertionError_1 = require("../Errors/AssertionError");
 const getClassMethods_1 = require("../Helpers/getClassMethods");
-const Log_1 = require("../Helpers/Log");
 const GetFiles_1 = require("./GetFiles");
 const emoji = require("node-emoji");
+const Logger_1 = require("./Logging/Logger");
+const SilentLogger_1 = require("./Logging/SilentLogger");
 class TestRunner {
     constructor() {
         this.limitToFile = null;
@@ -399,11 +416,16 @@ class TestRunner {
         this.failedTests = 0;
         this.totalAssertions = 0;
         this.testsRun = 0;
-        this.fileGetter = new GetFiles_1.GetFiles();
+        this.logger = new Logger_1.Logger();
+        this.fileGetter = new GetFiles_1.GetFiles(this.logger);
+    }
+    putInSilentMode() {
+        this.logger = new SilentLogger_1.SilentLogger();
+        this.fileGetter = new GetFiles_1.GetFiles(this.logger);
     }
     checkForNoAssertions(testingClass) {
         <span class="missing-if-branch" title="if path not taken" >I</span>if (testingClass.testAssertionCount === 0) {
-<span class="cstat-no" title="statement not covered" >            (0, Log_1.logWarn)('No assertions made in this test.');</span>
+<span class="cstat-no" title="statement not covered" >            this.logger.logWarn('No assertions made in this test.');</span>
         }
         return testingClass.testAssertionCount &gt; 0;
     }
@@ -415,7 +437,7 @@ class TestRunner {
     }
     successOrNoAssertions(testingClass) {
         <span class="missing-if-branch" title="else path not taken" >E</span>if (this.checkForNoAssertions(testingClass)) {
-            (0, Log_1.logSuccess)(`${emoji.get(':white_check_mark:')} Hooray, test passed ${testingClass.testAssertionCount} assertions`);
+            this.logger.logSuccess(`${emoji.get(':white_check_mark:')} Hooray, test passed ${testingClass.testAssertionCount} assertions`);
         }
     }
     callTestMethod(testingClass, key) {
@@ -424,17 +446,17 @@ class TestRunner {
                 this.tests += 1;
                 yield testingClass.setUp();
                 try {
-                    (0, Log_1.logInfo)(`Test: ${key}`);
+                    this.logger.logInfo(`Test: ${key}`);
                     yield testingClass[key]();
                     this.successOrNoAssertions(testingClass);
                 }
                 catch (error) {
                     this.failedTests += 1;
                     <span class="missing-if-branch" title="else path not taken" >E</span>if (error.constructor.name === AssertionError_1.AssertionError.name) {
-                        (0, Log_1.logError)(' Test failed');
-                        (0, Log_1.logError)(` ${error.message}`);
-                        console.log(error.diff);
-                        (0, Log_1.logInfo)(`${error.errorDetails}\n`);
+                        this.logger.logError(' Test failed');
+                        this.logger.logError(` ${error.message}`);
+                        this.logger.logPlain(error.diff);
+                        this.logger.logInfo(`${error.errorDetails}\n`);
                     }
                     else {
 <span class="cstat-no" title="statement not covered" >                        throw error;</span>
@@ -474,7 +496,7 @@ class TestRunner {
 <span class="cstat-no" title="statement not covered" >                    return;</span>
                 }
                 const testingClass = yield this.importTestClass(file);
-                (0, Log_1.logTitle)(`\nClass: ${testingClass.constructor.name}`);
+                this.logger.logTitle(`\nClass: ${testingClass.constructor.name}`);
                 try {
                     const classMethods = (0, getClassMethods_1.getClassMethods)(testingClass).filter((key) =&gt; {
                         return this.shouldCallMethod(testingClass, key);
@@ -488,8 +510,8 @@ class TestRunner {
                     }
                 }
                 catch (error) {
-<span class="cstat-no" title="statement not covered" >                    (0, Log_1.logError)('Error occurred');</span>
-<span class="cstat-no" title="statement not covered" >                    (0, Log_1.logError)(error.message);</span>
+<span class="cstat-no" title="statement not covered" >                    this.logger.logError('Error occurred');</span>
+<span class="cstat-no" title="statement not covered" >                    this.logger.logError(error.message);</span>
 <span class="cstat-no" title="statement not covered" >                    throw error;</span>
                 }
                 finally {
@@ -502,8 +524,10 @@ class TestRunner {
     }
     run(folder, file = null, test = null) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.limitToFile = file ? <span class="branch-0 cbranch-no" title="branch not covered" >`${file}.js`.replace('.js.js', '.js') </span>: null;
-            this.limitToTest = test;
+            <span class="missing-if-branch" title="if path not taken" >I</span>if (file &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >file !== 'undefined')</span> {
+<span class="cstat-no" title="statement not covered" >                this.limitToFile = `${file}.js`.replace('.js.js', '.js');</span>
+            }
+            this.limitToTest = test !== 'undefined' ? test : <span class="branch-1 cbranch-no" title="branch not covered" >null;</span>
             let files;
             try {
                 files = yield this.fileGetter.setPath(folder).files();
@@ -512,16 +536,16 @@ class TestRunner {
             catch (error) {
                 throw error;
             }
-            (0, Log_1.logInfo)(`Starting tests in ${this.testFilesCount} file(s)...`);
+            this.logger.logInfo(`Starting tests in ${this.testFilesCount} file(s)...`);
             return yield this.workThroughTestFiles(files);
         });
     }
     finish() {
-        const logFn = this.failedTests ? Log_1.logError : Log_1.logSuccess;
+        const logFn = this.failedTests ? 'logError' : 'logSuccess';
         const testReport = `${this.tests - this.failedTests}/${this.tests} passed`;
-        logFn(`\n${this.tests} tests: ${testReport}, assertions: ${this.totalAssertions}`);
+        this.logger[logFn](`\n${this.tests} tests: ${testReport}, assertions: ${this.totalAssertions}`);
         if (this.failedTests) {
-            (0, Log_1.logError)(`${this.failedTests} failed`);
+            this.logger.logError(`${this.failedTests} failed`);
             return false;
         }
         return true;
@@ -535,7 +559,7 @@ exports.TestRunner = TestRunner;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at Thu May 19 2022 16:14:18 GMT+0100 (British Summer Time)
+                at Fri May 20 2022 10:46:52 GMT+0100 (British Summer Time)
             </div>
         <script src="../../prettify.js"></script>
         <script>

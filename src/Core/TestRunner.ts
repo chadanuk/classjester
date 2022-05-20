@@ -1,9 +1,10 @@
 import { AssertionError } from '../Errors/AssertionError';
 import { getClassMethods } from '../Helpers/getClassMethods';
-import { logTitle, logInfo, logError, logSuccess, logWarn } from '../Helpers/Log';
 import { GetFiles } from './GetFiles';
 import * as emoji from 'node-emoji';
-import { log } from 'console';
+import { LoggerInterface } from './Logging/LoggerInterface';
+import { Logger } from './Logging/Logger';
+import { SilentLogger } from './Logging/SilentLogger';
 
 class TestRunner {
   private limitToFile: string | null = null;
@@ -12,17 +13,24 @@ class TestRunner {
   private testFilesCount = 0;
   private tests = 0;
   private failedTests = 0;
+  private logger: LoggerInterface;
 
   public totalAssertions = 0;
   public testsRun = 0;
 
   constructor() {
-    this.fileGetter = new GetFiles();
+    this.logger = new Logger();
+    this.fileGetter = new GetFiles(this.logger);
+  }
+
+  public putInSilentMode() {
+    this.logger = new SilentLogger();
+    this.fileGetter = new GetFiles(this.logger);
   }
 
   private checkForNoAssertions(testingClass: any) {
     if (testingClass.testAssertionCount === 0) {
-      logWarn('No assertions made in this test.');
+      this.logger.logWarn('No assertions made in this test.');
     }
 
     return testingClass.testAssertionCount > 0;
@@ -37,7 +45,7 @@ class TestRunner {
 
   private successOrNoAssertions(testingClass: any) {
     if (this.checkForNoAssertions(testingClass)) {
-      logSuccess(
+      this.logger.logSuccess(
         `${emoji.get(':white_check_mark:')} Hooray, test passed ${testingClass.testAssertionCount} assertions`,
       );
     }
@@ -49,7 +57,7 @@ class TestRunner {
 
       await testingClass.setUp();
       try {
-        logInfo(`Test: ${key}`);
+        this.logger.logInfo(`Test: ${key}`);
         await testingClass[key]();
 
         this.successOrNoAssertions(testingClass);
@@ -57,10 +65,10 @@ class TestRunner {
         this.failedTests += 1;
 
         if (error.constructor.name === AssertionError.name) {
-          logError(' Test failed');
-          logError(` ${error.message}`);
-          console.log(error.diff);
-          logInfo(`${error.errorDetails}\n`);
+          this.logger.logError(' Test failed');
+          this.logger.logError(` ${error.message}`);
+          this.logger.logPlain(error.diff);
+          this.logger.logInfo(`${error.errorDetails}\n`);
         } else {
           throw error;
         }
@@ -97,7 +105,7 @@ class TestRunner {
       }
 
       const testingClass: any = await this.importTestClass(file);
-      logTitle(`\nClass: ${testingClass.constructor.name}`);
+      this.logger.logTitle(`\nClass: ${testingClass.constructor.name}`);
       try {
         const classMethods: string[] = getClassMethods(testingClass).filter((key: string) => {
           return this.shouldCallMethod(testingClass, key);
@@ -112,8 +120,8 @@ class TestRunner {
           await this.callTestMethod(testingClass, key);
         }
       } catch (error: any) {
-        logError('Error occurred');
-        logError(error.message);
+        this.logger.logError('Error occurred');
+        this.logger.logError(error.message);
         throw error;
       } finally {
       }
@@ -125,8 +133,11 @@ class TestRunner {
   }
 
   public async run(folder: string, file: string | null = null, test: string | null = null) {
-    this.limitToFile = file ? `${file}.js`.replace('.js.js', '.js') : null;
-    this.limitToTest = test;
+    if (file && file !== 'undefined') {
+      this.limitToFile = `${file}.js`.replace('.js.js', '.js');
+    }
+    this.limitToTest = test !== 'undefined' ? test : null;
+
     let files: Array<string>;
     try {
       files = await this.fileGetter.setPath(folder).files();
@@ -136,18 +147,18 @@ class TestRunner {
       throw error;
     }
 
-    logInfo(`Starting tests in ${this.testFilesCount} file(s)...`);
+    this.logger.logInfo(`Starting tests in ${this.testFilesCount} file(s)...`);
 
     return await this.workThroughTestFiles(files);
   }
 
   finish(): boolean {
-    const logFn = this.failedTests ? logError : logSuccess;
+    const logFn = this.failedTests ? 'logError' : 'logSuccess';
     const testReport = `${this.tests - this.failedTests}/${this.tests} passed`;
 
-    logFn(`\n${this.tests} tests: ${testReport}, assertions: ${this.totalAssertions}`);
+    this.logger[logFn](`\n${this.tests} tests: ${testReport}, assertions: ${this.totalAssertions}`);
     if (this.failedTests) {
-      logError(`${this.failedTests} failed`);
+      this.logger.logError(`${this.failedTests} failed`);
       return false;
     }
 

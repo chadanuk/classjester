@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for lib/Helpers/Log.js</title>
+    <title>Code coverage report for lib/Core/Logging/Logger.js</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../../prettify.css" />
-    <link rel="stylesheet" href="../../base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../../sort-arrow-sprite.png);
+            background-image: url(../../../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">lib/Helpers</a> Log.js</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">lib/Core/Logging</a> Logger.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">40% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/18</span>
+                <span class='fraction'>4/10</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>0/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">40% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/18</span>
+                <span class='fraction'>4/10</span>
             </div>
         
             
@@ -87,54 +87,57 @@
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a>
 <a name='L24'></a><a href='#L24'>24</a>
-<a name='L25'></a><a href='#L25'>25</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
-<span class="cstat-no" title="statement not covered" >Object.defineProperty(exports, "__esModule", { value: true });</span>
-<span class="cstat-no" title="statement not covered" >exports.logTitle = exports.logWarn = exports.logError = exports.logSuccess = exports.logInfo = void 0;</span>
-const chalk = <span class="cstat-no" title="statement not covered" >require("chalk");</span>
-const logInfo = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(m</span>essage) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    console.log(chalk.reset(message));</span>
-};
-<span class="cstat-no" title="statement not covered" >exports.logInfo = logInfo;</span>
-const logSuccess = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(m</span>essage) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    console.log(chalk.green(message));</span>
-};
-<span class="cstat-no" title="statement not covered" >exports.logSuccess = logSuccess;</span>
-const logWarn = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(m</span>essage) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    console.log(chalk.yellow(message));</span>
-};
-<span class="cstat-no" title="statement not covered" >exports.logWarn = logWarn;</span>
-const logError = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(m</span>essage) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    console.log(chalk.red(message));</span>
-};
-<span class="cstat-no" title="statement not covered" >exports.logError = logError;</span>
-const logTitle = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(m</span>essage) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    console.log(chalk.white.bgBlack(message));</span>
-};
-<span class="cstat-no" title="statement not covered" >exports.logTitle = logTitle;</span>
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Logger = void 0;
+const chalk = require("chalk");
+class Logger {
+<span class="fstat-no" title="function not covered" >    lo</span>gInfo(message) {
+<span class="cstat-no" title="statement not covered" >        console.log(chalk.blue(message));</span>
+    }
+<span class="fstat-no" title="function not covered" >    lo</span>gSuccess(message) {
+<span class="cstat-no" title="statement not covered" >        console.log(chalk.green(message));</span>
+    }
+<span class="fstat-no" title="function not covered" >    lo</span>gWarn(message) {
+<span class="cstat-no" title="statement not covered" >        console.log(chalk.yellow(message));</span>
+    }
+<span class="fstat-no" title="function not covered" >    lo</span>gError(message) {
+<span class="cstat-no" title="statement not covered" >        console.log(chalk.red(message));</span>
+    }
+<span class="fstat-no" title="function not covered" >    lo</span>gTitle(message) {
+<span class="cstat-no" title="statement not covered" >        console.log(chalk.white.bgBlack(message));</span>
+    }
+<span class="fstat-no" title="function not covered" >    lo</span>gPlain(message) {
+<span class="cstat-no" title="statement not covered" >        console.log(message);</span>
+    }
+}
+exports.Logger = Logger;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -144,14 +147,14 @@ const logTitle = <span class="cstat-no" title="statement not covered" ><span cla
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
                 at Fri May 20 2022 10:46:52 GMT+0100 (British Summer Time)
             </div>
-        <script src="../../prettify.js"></script>
+        <script src="../../../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="../../sorter.js"></script>
-        <script src="../../block-navigation.js"></script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
     </body>
 </html>
     

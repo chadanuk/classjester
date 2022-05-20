@@ -11,6 +11,7 @@ class TestRunnerTest extends TestCase {
   constructor() {
     super();
     this.testRunner = new TestRunner();
+    this.testRunner.putInSilentMode();
   }
 
   public testHasRunFunction() {
@@ -40,7 +41,7 @@ class TestRunnerTest extends TestCase {
     );
     rewiremock(`${process.cwd()}/mockedTests/sub-dir/SomeOtherFileTest.js`).with(
       (module.exports = {
-        default: class SomeFileTest extends TestCase {
+        default: class SomeOtherFileTest extends TestCase {
           testOtherFakeTest() {
             this.assertTrue(false);
             thisTestCase.assertTrue(true);

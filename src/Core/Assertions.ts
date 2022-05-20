@@ -1,5 +1,4 @@
 import { AssertionError } from '../Errors/AssertionError';
-import { logSuccess } from '../Helpers/Log';
 
 class Assertions {
   public testAssertionCount = 0;

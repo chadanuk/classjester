@@ -1,7 +1,7 @@
 import { exit } from 'process';
 import { TestCase } from './Core/TestCase';
 import { TestRunner } from './Core/TestRunner';
-const args: { [key: string | number]: string } = {};
+const args: { [key: string | number]: string | boolean } = {};
 const startTime = new Date().getTime();
 process.argv.forEach(function (val: string, index: number) {
   let key = 'folder';
@@ -10,7 +10,7 @@ process.argv.forEach(function (val: string, index: number) {
     [key, value] = value.split('=');
   }
 
-  args[key.replace('--', '')] = value;
+  args[key.replace('--', '')] = value == undefined ? true : value;
 });
 
 global.onerror = (error) => {
@@ -20,7 +20,11 @@ try {
   const classJester = new TestRunner();
   const folder: string = `./${args.folder}`;
 
-  classJester.run(folder, args.file, args.test).then(() => {
+  if (args.silent) {
+    classJester.putInSilentMode();
+  }
+
+  classJester.run(folder, `${args.file}`, `${args.test}`).then(() => {
     const endTime = new Date().getTime();
     console.log(`Duration elapsed: ${(endTime - startTime) / 1000}s`);
     exit(0);
